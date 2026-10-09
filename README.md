@@ -10,12 +10,13 @@
 
 Admin panel: /admin/   |   Stats (admin only): GET /api/admin/stats/
 
-## API (Authorization: Token <token>)
+## API (header `Authorization: Token <your-token>`)
 | Method | URL | Who | Purpose |
 |---|---|---|---|
 | POST | /api/register/employer/ | public | register employer |
 | POST | /api/register/candidate/ | public | register candidate |
 | POST | /api/login/ | public | get token (username, password) |
+| GET | /api/me/ | logged-in user | current user and role |
 | GET | /api/jobs/ | public | search jobs |
 | POST | /api/jobs/ | employer | post job |
 | PUT/PATCH/DELETE | /api/jobs/{id}/ | owner employer | edit/delete job |
