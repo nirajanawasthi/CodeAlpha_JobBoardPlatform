@@ -31,3 +31,8 @@ Admin panel: /admin/   |   Stats (admin only): GET /api/admin/stats/
 Job search params: `?search=django&location=kathmandu&job_type=full_time&category=IT&min_salary=50000&max_salary=100000&ordering=-created_at`
 
 Statuses: applied, reviewed, shortlisted, interview, accepted, rejected
+
+## Frontend & Demo
+- Frontend: http://127.0.0.1:8000/  |  API: http://127.0.0.1:8000/api/  |  Admin: /admin/
+- Load sample data: `python manage.py seed_data`
+- Demo login (password `pass12345`): employer `techcorp`, candidate `ram`
