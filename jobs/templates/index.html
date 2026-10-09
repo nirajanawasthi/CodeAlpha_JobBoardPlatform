@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job Board</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--tx:#1d2433;--mut:#6b7587;--pri:#2f5bea;--bd:#e3e8f1;--ok:#16a34a;--bad:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
+.bar{max-width:980px;margin:auto;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:700;font-size:18px;color:var(--pri);margin-right:auto;cursor:pointer}
+nav{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+button{font:inherit;border:1px solid var(--bd);background:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;color:var(--tx)}
+button:hover{border-color:var(--pri)}
+button.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+button.danger{color:var(--bad)}
+button.on{background:#eaf0ff;border-color:var(--pri);color:var(--pri)}
+main{max-width:980px;margin:20px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sp{justify-content:space-between}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+input,select,textarea{font:inherit;width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:#fff}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--mut)}
+h2,h3{margin:0 0 10px}
+.muted{color:var(--mut);font-size:13px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:#eef2ff;color:var(--pri);margin-right:4px}
+.st{display:inline-block;font-size:12px;padding:2px 10px;border-radius:99px;background:#eef0f4;font-weight:600;text-transform:capitalize}
+.st.accepted,.st.shortlisted{background:#dcfce7;color:var(--ok)}
+.st.rejected{background:#fee2e2;color:var(--bad)}
+.st.interview,.st.reviewed{background:#fef3c7;color:#b45309}
+.n{font-size:26px;font-weight:700}
+dialog{border:none;border-radius:12px;padding:20px;width:min(480px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:8px;display:none;max-width:90vw;z-index:20}
+#toast.show{display:block}#toast.bad{background:var(--bad)}
+a{color:var(--pri)}
+
+/* purple wave background */
+body{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMid slice'%3E%3Cpath d='M0 30 C 420 75, 950 -40, 1600 110' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 43 C 420 88, 950 -27, 1600 126' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 56 C 420 101, 950 -14, 1600 142' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 69 C 420 114, 950 -1, 1600 158' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 82 C 420 127, 950 12, 1600 174' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 95 C 420 140, 950 25, 1600 190' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 108 C 420 153, 950 38, 1600 206' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 121 C 420 166, 950 51, 1600 222' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 134 C 420 179, 950 64, 1600 238' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 147 C 420 192, 950 77, 1600 254' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 160 C 420 205, 950 90, 1600 270' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 173 C 420 218, 950 103, 1600 286' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 186 C 420 231, 950 116, 1600 302' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 199 C 420 244, 950 129, 1600 318' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 212 C 420 257, 950 142, 1600 334' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 225 C 420 270, 950 155, 1600 350' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 238 C 420 283, 950 168, 1600 366' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 251 C 420 296, 950 181, 1600 382' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 264 C 420 309, 950 194, 1600 398' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 277 C 420 322, 950 207, 1600 414' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 290 C 420 335, 950 220, 1600 430' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 303 C 420 348, 950 233, 1600 446' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 316 C 420 361, 950 246, 1600 462' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 329 C 420 374, 950 259, 1600 478' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 342 C 420 387, 950 272, 1600 494' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 355 C 420 400, 950 285, 1600 510' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 368 C 420 413, 950 298, 1600 526' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3Cpath d='M0 381 C 420 426, 950 311, 1600 542' fill='none' stroke='white' stroke-opacity='.22' stroke-width='1.2'/%3E%3C/svg%3E") center/cover no-repeat fixed,linear-gradient(165deg,#6b3fa8 0%,#5a31a0 55%,#4a2893 100%) fixed;min-height:100vh}
+main{color:#fff}
+.card{color:var(--tx)}
+main>.muted,main>.row:not(.card) .muted{color:#e6dcfa}
+main>p>a{color:#fff}
+header{background:rgba(255,255,255,.96)}
+</style></head><body>
+<header><div class="bar"><div class="brand" data-v="jobs">JobBoard</div><nav id="nav"></nav></div></header>
+<main id="main"></main>
+<dialog id="dlg"><div id="dlgbox"></div></dialog>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const S={token:localStorage.getItem('jb_token'),me:null,unread:0,view:'jobs'};
+const TYPES={full_time:'Full-time',part_time:'Part-time',contract:'Contract',internship:'Internship',remote:'Remote'};
+const STATUS=['applied','reviewed','shortlisted','interview','accepted','rejected'];
+const F={search:'',location:'',job_type:'',min_salary:''};
+let J={};
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';')}
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.className='show'+(bad?' bad':'');clearTimeout(toast.t);toast.t=setTimeout(()=>{t.className=''},3500)}
+function errText(d){
+  if(!d)return 'Something went wrong';
+  if(typeof d==='string')return d;
+  if(d.detail)return d.detail;
+  return Object.entries(d).map(([k,v])=>(k==='non_field_errors'?'':k+': ')+(Array.isArray(v)?v.join(' '):JSON.stringify(v))).join(' | ');
+}
+async function api(path,o){
+  o=o||{};const h={};let body=o.body;
+  if(S.token)h.Authorization='Token '+S.token;
+  if(body&&!(body instanceof FormData)){h['Content-Type']='application/json';body=JSON.stringify(body)}
+  try{
+    const r=await fetch(path,{method:o.method||'GET',headers:h,body:body,credentials:'omit'});
+    let d=null;try{d=await r.json()}catch(e){}
+    if(r.status===401&&S.token)logout(true);
+    return {ok:r.ok,status:r.status,data:d};
+  }catch(e){return {ok:false,status:0,data:'Network error'}}
+}
+const view=h=>{$('#main').innerHTML=h};
+const money=n=>Number(n).toLocaleString();
+function salary(j){
+  if(!j.salary_min&&!j.salary_max)return 'Salary not listed';
+  return 'NPR '+(j.salary_min?money(j.salary_min):'?')+' - '+(j.salary_max?money(j.salary_max):'?');
+}
+const pg=(d,p)=>'<div class="row sp">'+(d.previous?'<button data-pg="'+(p-1)+'">Prev</button>':'<span></span>')+'<span class="muted">Page '+p+' | '+d.count+' total</span>'+(d.next?'<button data-pg="'+(p+1)+'">Next</button>':'<span></span>')+'</div>';
+const bindPg=fn=>document.querySelectorAll('[data-pg]').forEach(b=>{b.onclick=()=>fn(+b.dataset.pg)});
+const field=(id,label,type,extra)=>'<label>'+label+'</label><input id="f_'+id+'" type="'+(type||'text')+'" '+(extra||'')+'>';
+const val=id=>$('#f_'+id).value.trim();
+
+/* ---------- nav / auth ---------- */
+function renderNav(){
+  const m=S.me,r=m&&m.role;const b=[['jobs','Jobs']];
+  if(r==='candidate')b.push(['apps','My Applications'],['resumes','Resumes']);
+  if(r==='employer')b.push(['myjobs','My Jobs']);
+  if(m&&m.is_staff)b.push(['stats','Stats']);
+  if(m)b.push(['notifs','Notifications'+(S.unread?' ('+S.unread+')':'')]);
+  $('#nav').innerHTML=b.map(x=>'<button data-v="'+x[0]+'" class="'+(S.view===x[0]?'on':'')+'">'+x[1]+'</button>').join('')
+    +(m?'<span class="muted">'+esc(m.username)+' ('+esc(m.role)+')</span><button id="lo">Logout</button>':'<button class="pri" data-v="auth">Login / Register</button>');
+}
+async function loadMe(){
+  S.me=null;S.unread=0;
+  if(S.token){
+    const r=await api('/api/me/');
+    if(r.ok){S.me=r.data;const n=await api('/api/notifications/?is_read=false');S.unread=n.ok?n.data.count:0}
+    else{S.token=null;localStorage.removeItem('jb_token')}
+  }
+  renderNav();
+}
+function logout(silent){S.token=null;S.me=null;S.unread=0;localStorage.removeItem('jb_token');go('jobs');if(!silent)toast('Logged out')}
+async function afterAuth(token){S.token=token;localStorage.setItem('jb_token',token);await loadMe();go(S.me&&S.me.role==='employer'?'myjobs':'jobs');toast('Welcome, '+S.me.username)}
+
+function vAuth(t){
+  t=t||'login';
+  const tab=(k,l)=>'<button data-t="'+k+'" class="'+(t===k?'on':'')+'">'+l+'</button>';
+  let h='<div class="card" style="max-width:460px;margin:auto"><div class="row">'+tab('login','Login')+tab('cand','Register as Candidate')+tab('emp','Register as Employer')+'</div>';
+  if(t==='login')h+=field('u','Username')+field('p','Password','password')+'<p><button class="pri" id="sub">Login</button></p>';
+  else{
+    h+=field('u','Username')+field('e','Email','email')+field('p','Password (min 8 characters)','password')+field('fn','First name')+field('ln','Last name');
+    h+=t==='emp'?field('co','Company name')+field('web','Website (https://...)','url'):field('ph','Phone')+field('sk','Skills (comma separated)');
+    h+='<p><button class="pri" id="sub">Register</button></p>';
+  }
+  view(h+'</div>');
+  document.querySelectorAll('[data-t]').forEach(b=>{b.onclick=()=>vAuth(b.dataset.t)});
+  $('#sub').onclick=async()=>{
+    let r;
+    if(t==='login')r=await api('/api/login/',{method:'POST',body:{username:val('u'),password:$('#f_p').value}});
+    else{
+      const b={username:val('u'),email:val('e'),password:$('#f_p').value,first_name:val('fn'),last_name:val('ln')};
+      if(t==='emp'){b.company_name=val('co');b.website=val('web')}else{b.phone=val('ph');b.skills=val('sk')}
+      r=await api('/api/register/'+(t==='emp'?'employer':'candidate')+'/',{method:'POST',body:b});
+    }
+    if(r.ok)afterAuth(r.data.token);else toast(errText(r.data),1);
+  };
+}
+
+/* ---------- jobs (public) ---------- */
+function jobCard(j){
+  J[j.id]=j;
+  const act=S.me&&S.me.role==='candidate'?'<button class="pri" data-apply="'+j.id+'">Apply</button>':(!S.me?'<button data-v="auth">Login to apply</button>':'');
+  return '<div class="card"><div class="row sp"><h3>'+esc(j.title)+'</h3>'+act+'</div>'
+    +'<div class="muted">'+esc(j.employer.company_name)+' | '+esc(j.location)+'</div>'
+    +'<p><span class="tag">'+TYPES[j.job_type]+'</span>'+(j.category?'<span class="tag">'+esc(j.category)+'</span>':'')+'<span class="tag">'+salary(j)+'</span>'+(j.deadline?'<span class="tag">Deadline '+esc(j.deadline)+'</span>':'')+'</p>'
+    +'<div>'+esc(j.description.length>220?j.description.slice(0,220)+'...':j.description)+'</div></div>';
+}
+async function vJobs(p){
+  p=p||1;
+  const q=new URLSearchParams({page:p});for(const k in F)if(F[k])q.set(k,F[k]);
+  const r=await api('/api/jobs/?'+q);
+  let h='<div class="card"><div class="grid"><input id="fs" placeholder="Search title, company..." value="'+esc(F.search)+'"><input id="fl" placeholder="Location" value="'+esc(F.location)+'"><select id="ft"><option value="">Any type</option>'
+    +Object.keys(TYPES).map(k=>'<option value="'+k+'"'+(F.job_type===k?' selected':'')+'>'+TYPES[k]+'</option>').join('')
+    +'</select><input id="fm" type="number" placeholder="Min salary" value="'+esc(F.min_salary)+'"><button class="pri" id="fgo">Search</button></div></div>';
+  if(!r.ok)h+='<p class="muted">Could not load jobs.</p>';
+  else h+=(r.data.results.length?r.data.results.map(jobCard).join(''):'<p class="muted">No jobs found.</p>')+pg(r.data,p);
+  view(h);
+  const go1=()=>{F.search=$('#fs').value.trim();F.location=$('#fl').value.trim();F.job_type=$('#ft').value;F.min_salary=$('#fm').value;vJobs(1)};
+  $('#fgo').onclick=go1;
+  document.querySelectorAll('#fs,#fl,#fm').forEach(i=>{i.onkeydown=e=>{if(e.key==='Enter')go1()}});
+  document.querySelectorAll('[data-apply]').forEach(b=>{b.onclick=()=>applyDlg(J[b.dataset.apply])});
+  bindPg(vJobs);
+}
+function openDlg(h){$('#dlgbox').innerHTML=h;$('#dlg').showModal()}
+async function applyDlg(j){
+  const r=await api('/api/resumes/');const rs=r.ok?r.data.results:[];
+  if(!rs.length){openDlg('<h3>Apply: '+esc(j.title)+'</h3><p>Please upload a resume first.</p><div class="row"><button class="pri" data-v="resumes" data-close>Go to Resumes</button><button data-close>Cancel</button></div>');return}
+  openDlg('<h3>Apply: '+esc(j.title)+'</h3><label>Resume</label><select id="ar">'+rs.map(x=>'<option value="'+x.id+'">'+esc(x.title)+'</option>').join('')+'</select><label>Cover letter</label><textarea id="ac" rows="5"></textarea><p class="row"><button class="pri" id="asub">Submit application</button><button data-close>Cancel</button></p>');
+  $('#asub').onclick=async()=>{
+    const x=await api('/api/applications/',{method:'POST',body:{job:j.id,resume:+$('#ar').value,cover_letter:$('#ac').value}});
+    if(x.ok){$('#dlg').close();toast('Application submitted')}else toast(errText(x.data),1);
+  };
+}
+
+/* ---------- candidate ---------- */
+async function vResumes(){
+  const r=await api('/api/resumes/');
+  let h='<div class="card"><h3>Upload resume</h3>'+field('t','Title')+'<label>File (PDF, DOC, DOCX, max 5MB)</label><input id="f_f" type="file" accept=".pdf,.doc,.docx"><p><button class="pri" id="up">Upload</button></p></div>';
+  h+=r.ok&&r.data.results.length?r.data.results.map(x=>'<div class="card row sp"><div><b>'+esc(x.title)+'</b><div class="muted">'+new Date(x.uploaded_at).toLocaleString()+'</div></div><div class="row"><a href="'+esc(x.file)+'" target="_blank">View</a><button class="danger" data-del="'+x.id+'">Delete</button></div></div>').join(''):'<p class="muted">No resumes yet.</p>';
+  view(h);
+  $('#up').onclick=async()=>{
+    const f=$('#f_f').files[0];if(!f||!val('t'))return toast('Title and file are required',1);
+    const fd=new FormData();fd.append('title',val('t'));fd.append('file',f);
+    const x=await api('/api/resumes/',{method:'POST',body:fd});
+    if(x.ok){toast('Resume uploaded');vResumes()}else toast(errText(x.data),1);
+  };
+  document.querySelectorAll('[data-del]').forEach(b=>{b.onclick=async()=>{
+    if(!confirm('Delete this resume?'))return;
+    const x=await api('/api/resumes/'+b.dataset.del+'/',{method:'DELETE'});
+    if(x.ok){toast('Deleted');vResumes()}else toast(errText(x.data),1);
+  }});
+}
+async function vApps(p){
+  p=p||1;const r=await api('/api/applications/?page='+p);
+  let h='<h2>My applications</h2>';
+  if(!r.ok)h+='<p class="muted">Could not load.</p>';
+  else h+=(r.data.results.length?r.data.results.map(a=>'<div class="card row sp"><div><b>'+esc(a.job_title)+'</b><div class="muted">Applied '+new Date(a.applied_at).toLocaleDateString()+'</div></div><span class="st '+a.status+'">'+a.status+'</span></div>').join(''):'<p class="muted">You have not applied to any job yet.</p>')+pg(r.data,p);
+  view(h);bindPg(vApps);
+}
+
+/* ---------- employer ---------- */
+async function vMyJobs(p){
+  p=p||1;const r=await api('/api/jobs/my_jobs/?page='+p);
+  let h='<div class="card"><h3>Post a new job</h3><div class="grid">'+field('jt','Title')+field('jl','Location')+field('jc','Category')
+    +'<div><label>Job type</label><select id="f_jy">'+Object.keys(TYPES).map(k=>'<option value="'+k+'">'+TYPES[k]+'</option>').join('')+'</select></div>'
+    +field('smin','Min salary','number')+field('smax','Max salary','number')+field('dl','Deadline','date')+'</div>'
+    +'<label>Description</label><textarea id="f_jd" rows="4"></textarea><p><button class="pri" id="post">Post job</button></p></div><h2>My jobs</h2>';
+  if(!r.ok)h+='<p class="muted">Could not load.</p>';
+  else h+=(r.data.results.length?r.data.results.map(j=>'<div class="card"><div class="row sp"><div><b>'+esc(j.title)+'</b> <span class="st">'+(j.is_active?'open':'closed')+'</span><div class="muted">'+esc(j.location)+' | '+salary(j)+'</div></div><div class="row"><button data-ap="'+j.id+'">Applicants ('+j.applications_count+')</button><button data-tg="'+j.id+'" data-on="'+(j.is_active?1:0)+'">'+(j.is_active?'Close':'Reopen')+'</button><button class="danger" data-rm="'+j.id+'">Delete</button></div></div></div>').join(''):'<p class="muted">No jobs posted yet.</p>')+pg(r.data,p);
+  view(h);bindPg(vMyJobs);
+  $('#post').onclick=async()=>{
+    const b={title:val('jt'),location:val('jl'),category:val('jc'),job_type:$('#f_jy').value,description:$('#f_jd').value.trim()};
+    if(val('smin'))b.salary_min=+val('smin');if(val('smax'))b.salary_max=+val('smax');if(val('dl'))b.deadline=val('dl');
+    const x=await api('/api/jobs/',{method:'POST',body:b});
+    if(x.ok){toast('Job posted');vMyJobs()}else toast(errText(x.data),1);
+  };
+  document.querySelectorAll('[data-ap]').forEach(b=>{b.onclick=()=>vApplicants(b.dataset.ap)});
+  document.querySelectorAll('[data-tg]').forEach(b=>{b.onclick=async()=>{
+    const x=await api('/api/jobs/'+b.dataset.tg+'/',{method:'PATCH',body:{is_active:b.dataset.on!=='1'}});
+    if(x.ok)vMyJobs(p);else toast(errText(x.data),1);
+  }});
+  document.querySelectorAll('[data-rm]').forEach(b=>{b.onclick=async()=>{
+    if(!confirm('Delete this job and its applications?'))return;
+    const x=await api('/api/jobs/'+b.dataset.rm+'/',{method:'DELETE'});
+    if(x.ok){toast('Deleted');vMyJobs(p)}else toast(errText(x.data),1);
+  }});
+}
+async function vApplicants(id){
+  const r=await api('/api/jobs/'+id+'/applications/');
+  let h='<p><button data-v="myjobs">Back to my jobs</button></p><h2>Applicants</h2>';
+  if(!r.ok)h+='<p class="muted">Could not load.</p>';
+  else h+=r.data.length?r.data.map(a=>'<div class="card"><div class="row sp"><div><b>'+esc(a.candidate_name)+'</b><div class="muted">Applied '+new Date(a.applied_at).toLocaleDateString()+'</div></div>'
+    +'<div class="row"><a href="'+esc(a.resume_file)+'" target="_blank">Resume</a><select data-st="'+a.id+'">'+STATUS.map(s=>'<option'+(s===a.status?' selected':'')+'>'+s+'</option>').join('')+'</select></div></div>'
+    +(a.cover_letter?'<p>'+esc(a.cover_letter)+'</p>':'')+'</div>').join(''):'<p class="muted">No applications yet.</p>';
+  view(h);
+  document.querySelectorAll('[data-st]').forEach(s=>{s.onchange=async()=>{
+    const x=await api('/api/applications/'+s.dataset.st+'/status/',{method:'PATCH',body:{status:s.value}});
+    toast(x.ok?'Status updated, candidate notified':errText(x.data),!x.ok);
+  }});
+}
+
+/* ---------- notifications / stats ---------- */
+async function vNotifs(p){
+  p=p||1;const r=await api('/api/notifications/?page='+p);
+  let h='<div class="row sp"><h2>Notifications</h2><button id="mr">Mark all read</button></div>';
+  if(!r.ok)h+='<p class="muted">Could not load.</p>';
+  else h+=(r.data.results.length?r.data.results.map(n=>'<div class="card"'+(n.is_read?'':' style="border-left:4px solid var(--pri)"')+'>'+esc(n.message)+'<div class="muted">'+new Date(n.created_at).toLocaleString()+'</div></div>').join(''):'<p class="muted">Nothing here yet.</p>')+pg(r.data,p);
+  view(h);bindPg(vNotifs);
+  $('#mr').onclick=async()=>{await api('/api/notifications/mark_all_read/',{method:'POST'});await loadMe();vNotifs(p)};
+}
+async function vStats(){
+  const r=await api('/api/admin/stats/');
+  if(!r.ok)return view('<p class="muted">Admin only.</p>');
+  const s=r.data,box=(l,v)=>'<div class="card"><div class="n">'+v+'</div><div class="muted">'+l+'</div></div>';
+  view('<h2>Statistics</h2><div class="grid">'+box('Users',s.users)+box('Employers',s.employers)+box('Candidates',s.candidates)+box('Jobs',s.jobs)+box('Active jobs',s.active_jobs)+box('Applications',s.applications)+'</div>'
+    +'<div class="card"><h3>Applications by status</h3>'+Object.keys(s.applications_by_status).map(k=>'<span class="st '+k+'">'+k+': '+s.applications_by_status[k]+'</span> ').join('')+'</div>'
+    +'<div class="card"><h3>Top jobs</h3>'+s.top_jobs.map(j=>'<div>'+esc(j.title)+' <span class="muted">('+j.c+' applications)</span></div>').join('')+'</div>'
+    +'<p><a href="/admin/" target="_blank">Open Django admin</a></p>');
+}
+
+/* ---------- router ---------- */
+const VIEWS={jobs:vJobs,auth:vAuth,resumes:vResumes,apps:vApps,myjobs:vMyJobs,notifs:vNotifs,stats:vStats};
+function go(v,a){S.view=v;renderNav();VIEWS[v](a)}
+document.addEventListener('click',e=>{
+  const t=e.target;
+  if(t.dataset.v)go(t.dataset.v);
+  if(t.id==='lo')logout();
+  if(t.dataset.close!==undefined)$('#dlg').close();
+});
+loadMe().then(()=>go('jobs'));
+</script></body></html>
